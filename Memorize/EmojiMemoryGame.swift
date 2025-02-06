@@ -9,10 +9,10 @@ import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
     init() {
-        theme = ThemeChooser().themes.randomElement()!
-        let emojis = theme.emojis.shuffled()
+        chosenTheme = ThemeChooser().themes.randomElement()!
+        let emojis = chosenTheme.emojis.shuffled()
         print(emojis)
-        model = MemoryGame(numberOfPairsOfCards: theme.numberOfCards)
+        model = MemoryGame(numberOfPairsOfCards: chosenTheme.numberOfCards)
         { index in
             if emojis.indices.contains(index) {
                 return emojis[index]
@@ -23,7 +23,7 @@ class EmojiMemoryGame: ObservableObject {
         model.shuffle()
     }
     
-    private var theme: ThemeChooser.Theme
+    private var chosenTheme: ThemeChooser.Theme
     @Published private var model : MemoryGame<String>
     
     var cards: Array<MemoryGame<String>.Card> {
@@ -34,12 +34,12 @@ class EmojiMemoryGame: ObservableObject {
         model.choose(card)
     }
     
-    var getTheme: ThemeChooser.Theme {
-        return self.theme
+    var theme: ThemeChooser.Theme {
+        return self.chosenTheme
     }
     
     var themeColor: Color {
-        return convertColor(color: theme.color)
+        return convertColor(color: chosenTheme.color)
     }
     
     var score: Int {
@@ -62,7 +62,7 @@ class EmojiMemoryGame: ObservableObject {
     // MARK: - Intents
     
     func newGame() {
-        theme = ThemeChooser().themes.randomElement()!
+        chosenTheme = ThemeChooser().themes.randomElement()!
         model = MemoryGame(numberOfPairsOfCards: theme.numberOfCards)
         { index in
             if theme.emojis.indices.contains(index) {

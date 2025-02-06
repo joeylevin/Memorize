@@ -12,7 +12,7 @@ struct EmojiMemoryGameView: View {
     
     var body: some View {
         VStack {
-            Text("Memorize: \(viewModel.getTheme.name)").font(.largeTitle)
+            Text("Memorize: \(viewModel.theme.name)").font(.largeTitle)
             ScrollView {
                 cards
                     .animation(.default, value: viewModel.cards)
@@ -32,7 +32,7 @@ struct EmojiMemoryGameView: View {
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 100), spacing: 0)]) {
             ForEach(viewModel.cards) { card in
-                CardView(card: card, theme: viewModel.getTheme, color: viewModel.themeColor)
+                CardView(card: card, theme: viewModel.theme, color: viewModel.themeColor)
                     .aspectRatio(2/3, contentMode: .fit)
                     .padding(4)
                     .onTapGesture {
@@ -41,7 +41,6 @@ struct EmojiMemoryGameView: View {
             }
         }
     }
-    
 }
 
 struct CardView: View {
@@ -49,15 +48,10 @@ struct CardView: View {
     let theme: ThemeChooser.Theme
     let color: Color
     
-    init(card: MemoryGame<String>.Card, theme: ThemeChooser.Theme, color: Color) {
-        self.card = card
-        self.theme = theme
-        self.color = color
-    }
-    
     var body: some View {
         ZStack {
             let base = RoundedRectangle(cornerRadius: 12)
+            
             Group {
                 base.fill(.white)
                 Text(card.content)
@@ -66,23 +60,21 @@ struct CardView: View {
                     .aspectRatio(1, contentMode: .fit)
             }
             .opacity(card.isFaceUp ? 1 : 0)
+            
             Group {
                 base.fill(color)
                 Image(systemName: theme.symbol)
                     .imageScale(.large)
                     .font(.largeTitle)
-                
             }
-           .opacity(card.isFaceUp ? 0 : 1)
+            .opacity(card.isFaceUp ? 0 : 1)
+            
             base.strokeBorder(lineWidth: 2)
-
         }
         .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
+        .accessibilityLabel(card.content) // Optional: Add accessibility for visually impaired users
     }
 }
-
-
-
 
 struct EmojiMemoryGameView_Previews: PreviewProvider {
     static var previews: some View {

@@ -8,20 +8,23 @@
 import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
-    private static let emojis = ["🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐻‍❄️","🐨","🐯","🦁"]
-    
-    private static func createMemoryGame() -> MemoryGame<String> {
-        return MemoryGame(numberOfPairsOfCards: 4)
-            { index in
-                if emojis.indices.contains(index) {
-                    return emojis[index]
-                } else {
-                    return "!?"
-                }
+    init() {
+        theme = ThemeChooser().themes.randomElement()!
+        let emojis = theme.emojis.shuffled()
+        print(emojis)
+        model = MemoryGame(numberOfPairsOfCards: theme.numberOfCards)
+        { index in
+            if emojis.indices.contains(index) {
+                return emojis[index]
+            } else {
+                return "!?"
             }
+        }
+        model.shuffle()
     }
     
-    @Published private var model = createMemoryGame()
+    private var theme: ThemeChooser.Theme
+    @Published private var model : MemoryGame<String>
     
     var cards: Array<MemoryGame<String>.Card> {
         return model.cards
@@ -31,9 +34,43 @@ class EmojiMemoryGame: ObservableObject {
         model.choose(card)
     }
     
+    var getTheme: ThemeChooser.Theme {
+        return self.theme
+    }
+    
+    var themeColor: Color {
+        return convertColor(color: theme.color)
+    }
+    
+    var score: Int {
+        return model.score
+    }
+    
+    func convertColor(color: String) -> Color {
+        switch color {
+        case "orange": return .orange
+        case "blue": return .blue
+        case "red": return .red
+        case "black": return .black
+        case "green": return .green
+        case "brown": return .brown
+        default: return .black
+        }
+        
+    }
+    
     // MARK: - Intents
     
-    func shuffle() {
+    func newGame() {
+        theme = ThemeChooser().themes.randomElement()!
+        model = MemoryGame(numberOfPairsOfCards: theme.numberOfCards)
+        { index in
+            if theme.emojis.indices.contains(index) {
+                return theme.emojis[index]
+            } else {
+                return "!?"
+            }
+        }
         model.shuffle()
     }
 }

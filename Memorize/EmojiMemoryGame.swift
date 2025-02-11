@@ -12,7 +12,8 @@ class EmojiMemoryGame: ObservableObject {
         chosenTheme = ThemeChooser().themes.randomElement()!
         let emojis = chosenTheme.emojis.shuffled()
         print(emojis)
-        model = MemoryGame(numberOfPairsOfCards: chosenTheme.numberOfCards)
+        let safeIndex = chosenTheme.numberOfCards ?? Int.random(in: 0..<chosenTheme.emojis.count)
+        model = MemoryGame(numberOfPairsOfCards: safeIndex)
         { index in
             if emojis.indices.contains(index) {
                 return emojis[index]
@@ -63,7 +64,8 @@ class EmojiMemoryGame: ObservableObject {
     
     func newGame() {
         chosenTheme = ThemeChooser().themes.randomElement()!
-        model = MemoryGame(numberOfPairsOfCards: theme.numberOfCards)
+        let safeIndex = chosenTheme.numberOfCards ?? Int.random(in: 0..<chosenTheme.emojis.count)
+        model = MemoryGame(numberOfPairsOfCards: safeIndex)
         { index in
             if theme.emojis.indices.contains(index) {
                 return theme.emojis[index]

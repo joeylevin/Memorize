@@ -14,37 +14,20 @@ struct CardView: View {
     let color: Color
     
     var body: some View {
-        ZStack {
-            let base = RoundedRectangle(cornerRadius: Constants.cornerRadius)
-            
-            Group {
-                base.fill(.white)
-                Pie(endAngle: .degrees(240))
-                    .opacity(Constants.pie.opacity)
-                    .overlay(
-                        Text(card.content)
-                            .font(.system(size: Constants.FontSize.largest))
-                            .minimumScaleFactor(Constants.FontSize.scaleFactor)
-                            .multilineTextAlignment(.center)
-                            .aspectRatio(1, contentMode: .fit)
-                            .padding(Constants.pie.inset)
-                    )
-                    .padding(Constants.inset)
-            }
-            .opacity(card.isFaceUp ? 1 : 0)
-            
-            Group {
-                base.fill(color)
-                Image(systemName: symbol)
-                    .imageScale(.large)
-                    .font(.largeTitle)
-            }
-            .opacity(card.isFaceUp ? 0 : 1)
-            
-            base.strokeBorder(lineWidth: Constants.lineWidth)
-        }
-        .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
-        .accessibilityLabel(card.content) // Optional: Add accessibility for visually impaired users
+        Pie(endAngle: .degrees(240))
+            .opacity(Constants.pie.opacity)
+            .overlay(
+                Text(card.content)
+                    .font(.system(size: Constants.FontSize.largest))
+                    .minimumScaleFactor(Constants.FontSize.scaleFactor)
+                    .multilineTextAlignment(.center)
+                    .aspectRatio(1, contentMode: .fit)
+                    .padding(Constants.pie.inset)
+            )
+            .padding(Constants.inset)
+            .cardify(isFaceUp: card.isFaceUp, color: color, symbol: symbol )
+            .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
+            .accessibilityLabel(card.content) // Optional: Add accessibility for visually impaired users
     }
     
     private struct Constants {

@@ -49,6 +49,10 @@ class EmojiMemoryGame: ObservableObject {
         model.score
     }
     
+    func shuffle() {
+        model.shuffle()
+    }
+    
     func convertColor(color: String) -> Color {
         switch color {
         case "orange": return .orange

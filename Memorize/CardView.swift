@@ -14,22 +14,29 @@ struct CardView: View {
     let color: Color
     
     var body: some View {
-        Pie(endAngle: .degrees(240))
-            .opacity(Constants.pie.opacity)
-            .overlay(
-                Text(card.content)
-                    .font(.system(size: Constants.FontSize.largest))
-                    .minimumScaleFactor(Constants.FontSize.scaleFactor)
-                    .multilineTextAlignment(.center)
-                    .aspectRatio(1, contentMode: .fit)
-                    .padding(Constants.pie.inset)
-                    .rotationEffect(.degrees(card.isMatched ? 360 : 0))
-                    .animation(.spin(duration: 1), value: card.isMatched)
-            )
-            .padding(Constants.inset)
-            .cardify(isFaceUp: card.isFaceUp, color: color, symbol: symbol )
-            .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
-            .accessibilityLabel(card.content) // Optional: Add accessibility for visually impaired users
+        TimelineView(.animation(minimumInterval: 1/10)) { timeline in
+            if card.isFaceUp || !card.isMatched {
+                Pie(endAngle: .degrees(card.bonusPercentRemaining*360))
+                    .opacity(Constants.pie.opacity)
+                    .overlay(cardContents.padding(Constants.pie.inset))
+                    .padding(Constants.inset)
+                    .cardify(isFaceUp: card.isFaceUp, color: color, symbol: symbol )
+                    .transition(.scale)
+                    .accessibilityLabel(card.content) // Optional: Add accessibility for visually impaired users
+            } else {
+                Color.clear
+            }
+        }
+    }
+    
+    var cardContents: some View {
+        Text(card.content)
+            .font(.system(size: Constants.FontSize.largest))
+            .minimumScaleFactor(Constants.FontSize.scaleFactor)
+            .multilineTextAlignment(.center)
+            .aspectRatio(1, contentMode: .fit)
+            .rotationEffect(.degrees(card.isMatched ? 360 : 0))
+            .animation(.spin(duration: 1), value: card.isMatched)
     }
     
     private struct Constants {
